@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { gzip, ungzip } from 'node-gzip';
 import * as jwt from 'jsonwebtoken';
-import base64url from 'base64url';
+// import base64url from 'base64url';
+// import base64 from 'base-64';
 @Injectable()
 export class RegistorService {
   async compressBitstring(data: Buffer) {
@@ -11,9 +12,11 @@ export class RegistorService {
       throw new Error(error);
     }
   }
-  encodeBase64url(data: Buffer) {
+  encodeBase64(data: Buffer) {
     try {
-      return base64url.encode(data);
+      //   return base64url.encode(data);
+      //   var encoded = base64.encode(data);
+      return data.toString('base64');
     } catch (error) {
       throw new Error(error);
     }
@@ -65,7 +68,7 @@ export class RegistorService {
       console.log(bitstring);
       const compressedBitstring = await this.compressBitstring(bitstring);
       console.log('compressedBitstring', compressedBitstring);
-      const encodedBitstring = this.encodeBase64url(compressedBitstring);
+      const encodedBitstring = this.encodeBase64(compressedBitstring);
       console.log('encodedBitstring', encodedBitstring);
 
       const jwt = this.jwtEncode(encodedBitstring);
