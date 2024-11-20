@@ -17,6 +17,17 @@ export class RegistorController {
     }
   }
 
+  @Post('/credentials/status/revocation/message')
+  async messageRegistry() {
+    try {
+      const messageRegistry = await this.registryService.messageRegistry();
+
+      return messageRegistry;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   @Get('/test')
   playGround() {
     try {

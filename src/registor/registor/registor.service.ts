@@ -35,7 +35,7 @@ export class RegistorService {
     }
   }
 
-  jwtEncode(_encodedList: string) {
+  jwtEncode(vc_body: any) {
     try {
       const header = {
         alg: 'EdDSA',
@@ -47,19 +47,7 @@ export class RegistorService {
         iat: 1725349852,
         iss: 'did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp',
 
-        vc: {
-          '@context': ['https://www.w3.org/ns/credentials/v2'],
-          id: 'https://mydomain5000.loca.lt/api/registry/credentials/status/revocation',
-          type: ['VerifiableCredential', 'BitStringStatusListCredential'],
-          issuer: 'did:example:12345',
-          validFrom: '2024-10-25T15:52:58+07:00',
-          credentialSubject: {
-            id: 'f709cf3b-ad03-4291-8675-5b01c9fd0662',
-            type: 'BitstringStatusList',
-            statusPurpose: 'revocation',
-            encodedList: _encodedList,
-          },
-        },
+        vc: vc_body,
       };
       //   console.log(payload);
       const privateKey = 'your-private-key';
@@ -74,30 +62,6 @@ export class RegistorService {
 
   async testRevocation() {
     try {
-      //   const bitArray = bitstring.split('');
-      //   console.log(bitArray);
-      //   const bitstring_string_test = Buffer.from(bitstring);
-      //   console.log('bitstring_string_test', bitstring_string_test);
-
-      //   const byteArray = new Array(80); // Automatically initialized to 0s
-      //   console.log(byteArray);
-
-      // const binaryString = '00000000000000100000000000';
-
-      // const nullArray: null[] = Array(50).fill(null);
-      // const testArrayString = nullArray.toString();
-
-      // const bitString = '0'.repeat(131072);
-      // console.log(bitString.length); // Output: 131072 (each '0' represents a bit)
-
-      // const len = 131072; // Smaller size for debugging 131072
-      // const bitstring = Buffer.alloc(len, null);
-      // console.log(bitstring.slice(0, 20));
-      // bitstring[5] = 1;
-
-      // const byteArray = new Uint8Array(131072);
-      // console.log(byteArray);
-
       //........ORG...........
       const len = 131072; // Smaller size for debugging 131072
       const bitstring = Buffer.alloc(len);
@@ -110,15 +74,59 @@ export class RegistorService {
       const encodedBitstring = this.encodeBase64(compressedBitstring);
       console.log('encodedBitstring', encodedBitstring);
 
-      // const decodeBase64 = Buffer.from(encodedBitstring, 'base64').toString(
-      //   'utf8',
-      // );
-      // console.log('decodeBase64', decodeBase64);
-      // const uncompress = await this.uncompress(decodeBase64);
-      // console.log('uncompresss', uncompress);
+      const vc_body = {
+        '@context': ['https://www.w3.org/ns/credentials/v2'],
+        id: 'https://mydomain5000.loca.lt/api/registry/credentials/status/revocation',
+        type: ['VerifiableCredential', 'BitStringStatusListCredential'],
+        issuer: 'did:example:12345',
+        validFrom: '2024-10-25T15:52:58+07:00',
+        credentialSubject: {
+          id: 'f709cf3b-ad03-4291-8675-5b01c9fd0662',
+          type: 'BitstringStatusList',
+          statusPurpose: 'revocation',
+          encodedList: encodedBitstring,
+        },
+      };
 
-      const jwt = this.jwtEncode(encodedBitstring);
+      const jwt = this.jwtEncode(vc_body);
 
+      return jwt;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async messageRegistry() {
+    try {
+      const len = 131072; // Smaller size for debugging 131072
+      const bitstring = Buffer.alloc(len);
+      bitstring[5] = 1;
+      bitstring[10] = 1;
+      bitstring[20] = 2;
+      bitstring[30] = 3;
+      bitstring[40] = 4;
+      console.log(bitstring);
+
+      const compressedBitstring = await this.compressBitstring(bitstring);
+      console.log('compressedBitstring', compressedBitstring);
+      const encodedBitstring = this.encodeBase64(compressedBitstring);
+      console.log('encodedBitstring', encodedBitstring);
+
+      const vc_body = {
+        '@context': ['https://www.w3.org/ns/credentials/v2'],
+        id: 'https://mydomain5000.loca.lt/api/registry/credentials/status/revocation/message',
+        type: ['VerifiableCredential', 'BitStringStatusListCredential'],
+        issuer: 'did:example:12345',
+        validFrom: '2024-10-25T15:52:58+07:00',
+        credentialSubject: {
+          id: 'f709cf3b-ad03-4291-8675-5b01c9fd0662',
+          type: 'BitstringStatusList',
+          statusPurpose: 'message',
+          encodedList: encodedBitstring,
+        },
+      };
+
+      const jwt = this.jwtEncode(vc_body);
       return jwt;
     } catch (error) {
       throw new Error(error);
