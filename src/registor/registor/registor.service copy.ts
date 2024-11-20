@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ungzip } from 'node-gzip';
-import { gzip, gzipSync } from 'zlib';
+import { gzip, ungzip } from 'node-gzip';
 import * as jwt from 'jsonwebtoken';
 // import base64url from 'base64url';
 import * as base64 from 'base-64';
@@ -8,9 +7,7 @@ import * as base64 from 'base-64';
 export class RegistorService {
   async compressBitstring(data: Buffer) {
     try {
-      const compressedData = gzipSync(data);
-      return compressedData;
-      // return await gzip(data);
+      return await gzip(data);
     } catch (error) {
       throw new Error(error);
     }
@@ -27,8 +24,6 @@ export class RegistorService {
   }
   async uncompress(data: string) {
     try {
-      console.log('data', data);
-
       return await ungzip(data);
     } catch (error) {
       throw new Error(error);
@@ -74,48 +69,40 @@ export class RegistorService {
 
   async testRevocation() {
     try {
-      //   const bitArray = bitstring.split('');
-      //   console.log(bitArray);
-      //   const bitstring_string_test = Buffer.from(bitstring);
-      //   console.log('bitstring_string_test', bitstring_string_test);
-
-      //   const byteArray = new Array(80); // Automatically initialized to 0s
-      //   console.log(byteArray);
-
-      // const binaryString = '00000000000000100000000000';
-
-      // const nullArray: null[] = Array(50).fill(null);
-      // const testArrayString = nullArray.toString();
-
-      // const bitString = '0'.repeat(131072);
-      // console.log(bitString.length); // Output: 131072 (each '0' represents a bit)
-
-      // const len = 131072; // Smaller size for debugging 131072
-      // const bitstring = Buffer.alloc(len, null);
-      // console.log(bitstring.slice(0, 20));
-      // bitstring[5] = 1;
-
-      // const byteArray = new Uint8Array(131072);
-      // console.log(byteArray);
-
-      //........ORG...........
-      const len = 131072; // Smaller size for debugging 131072
+      //   const len = 131072; // Smaller size for debugging 131072
+      //   const bitstring = Buffer.alloc(len);
+      //   bitstring[5] = parseInt('0x1', 16);
+      //   console.log(bitstring);
+      ////...............................
+      const len = 131072; // Buffer size in bytes
       const bitstring = Buffer.alloc(len);
-      bitstring[5] = 1;
-      bitstring[20] = 1;
-      console.log(bitstring);
-      //........ORG...........
+      bitstring[5] = 1; // Set the bit at index 5 for demonstration
+
+      // Convert buffer to a bit string array
+      const bitList = [];
+
+      for (let i = 0; i < bitstring.length; i++) {
+        // Convert each byte to a binary string, padded to 8 bits (e.g., "00000001")
+        const byteStr = bitstring[i].toString(2).padStart(8, '0');
+
+        // Split the binary string into individual bits and push to the bit list
+        bitList.push(...byteStr.split(''));
+      }
+      console.log(bitList);
+
+      ////...............................
+
       const compressedBitstring = await this.compressBitstring(bitstring);
       console.log('compressedBitstring', compressedBitstring);
       const encodedBitstring = this.encodeBase64(compressedBitstring);
       console.log('encodedBitstring', encodedBitstring);
 
-      // const decodeBase64 = Buffer.from(encodedBitstring, 'base64').toString(
-      //   'utf8',
-      // );
-      // console.log('decodeBase64', decodeBase64);
-      // const uncompress = await this.uncompress(decodeBase64);
-      // console.log('uncompresss', uncompress);
+      //   const decodeBase64 = base64.decode(encodedBitstring);
+      //   console.log('decodeBase64', decodeBase64);
+
+      //   console.log(decodeBase64);
+      //   const uncompress = await this.uncompress(decodeBase64);
+      //   console.log('uncompresss', uncompress);
 
       const jwt = this.jwtEncode(encodedBitstring);
 
