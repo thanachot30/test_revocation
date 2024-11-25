@@ -5,7 +5,7 @@ import { RegistorService } from './registor.service';
 export class RegistorController {
   constructor(private readonly registryService: RegistorService) {}
 
-  @Post('/credentials/status/revocation')
+  @Get('/credentials/status/revocation')
   async testRegistry() {
     try {
       //https://mydomain5000.loca.lt/api/registry/credentials/status
@@ -17,12 +17,33 @@ export class RegistorController {
     }
   }
 
-  @Post('/credentials/status/revocation/message')
+  @Get('/credentials/status/revocation/message')
   async messageRegistry() {
     try {
       const messageRegistry = await this.registryService.messageRegistry();
 
       return messageRegistry;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  @Get('/credentials/status/revocation/message-new')
+  message2() {
+    try {
+      const hexList = this.registryService.binaryToHexByte(); //mock
+      const jwt = this.registryService.messageRegistry_new(hexList);
+      return jwt;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  @Get('/binaryToHex')
+  binaryToHex() {
+    try {
+      const data = this.registryService.binaryToHexByte(); //mock
+      return data;
     } catch (error) {
       throw new Error(error);
     }

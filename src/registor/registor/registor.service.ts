@@ -100,13 +100,9 @@ export class RegistorService {
     try {
       const len = 131072; // Smaller size for debugging 131072
       const bitstring = Buffer.alloc(len);
-      bitstring[5] = 1;
-      bitstring[10] = 1;
-      bitstring[20] = 2;
-      bitstring[30] = 3;
-      bitstring[40] = 4;
-      console.log(bitstring);
+      bitstring[10] = 3; // Same as decimal 3
 
+      console.log(bitstring);
       const compressedBitstring = await this.compressBitstring(bitstring);
       console.log('compressedBitstring', compressedBitstring);
       const encodedBitstring = this.encodeBase64(compressedBitstring);
@@ -128,6 +124,52 @@ export class RegistorService {
 
       const jwt = this.jwtEncode(vc_body);
       return jwt;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  messageRegistry_new(hexlist: string[]) {
+    try {
+      const byteArray = hexlist.map((hex) => parseInt(hex, 16));
+      console.log(byteArray);
+      const buffer = Buffer.from(byteArray);
+      const compressedData = gzipSync(buffer);
+      console.log('compressedData', compressedData);
+      const encodedBitstring = compressedData.toString('base64');
+      console.log('data_base64', encodedBitstring);
+
+      const vc_body = {
+        '@context': ['https://www.w3.org/ns/credentials/v2'],
+        id: 'https://mydomain5000.loca.lt/api/registry/credentials/status/revocation',
+        type: ['VerifiableCredential', 'BitStringStatusListCredential'],
+        issuer: 'did:example:12345',
+        validFrom: '2024-10-25T15:52:58+07:00',
+        credentialSubject: {
+          id: 'f709cf3b-ad03-4291-8675-5b01c9fd0662',
+          type: 'BitstringStatusList',
+          statusPurpose: 'message',
+          encodedList: encodedBitstring,
+        },
+      };
+      const jwt = this.jwtEncode(vc_body);
+      return jwt;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  binaryToHexByte() {
+    try {
+      const binaryArray = ['11001001', '01000100', '11111001'];
+      const byteArray = binaryArray.map((bin) => parseInt(bin, 2));
+      const hexArray = byteArray.map(
+        (byte) => `0x${byte.toString(16).padStart(2, '0')}`,
+      );
+
+      // console.log(byteArray); // Output: [201, 68, 249] (decimal representation)
+      // console.log(hexArray); // Output: ['0xc9', '0x44', '0xf9'] (hexadecimal representation)
+      return hexArray;
     } catch (error) {
       throw new Error(error);
     }
