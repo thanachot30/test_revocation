@@ -63,15 +63,14 @@ export class RegistorService {
   async testRevocation() {
     try {
       //........ORG...........
-      const len = 131072; // Smaller size for debugging 131072
-      const bitstring = Buffer.alloc(len);
-      bitstring[5] = 1;
-      bitstring[20] = 1;
-      console.log(bitstring);
+      const bitArray = this.createBitArray(80);
+      const byteArray = bitArray.map((hex) => parseInt(hex, 16));
+      // console.log(bitArray);
+      const buffer = Buffer.from(byteArray);
       //........ORG...........
-      const compressedBitstring = await this.compressBitstring(bitstring);
-      console.log('compressedBitstring', compressedBitstring);
-      const encodedBitstring = this.encodeBase64(compressedBitstring);
+      const compressedData = gzipSync(buffer);
+      console.log('compressedBitstring', compressedData);
+      const encodedBitstring = compressedData.toString('base64');
       console.log('encodedBitstring', encodedBitstring);
 
       const vc_body = {
@@ -90,39 +89,6 @@ export class RegistorService {
 
       const jwt = this.jwtEncode(vc_body);
 
-      return jwt;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  async messageRegistry() {
-    try {
-      const len = 131072; // Smaller size for debugging 131072
-      const bitstring = Buffer.alloc(len);
-      bitstring[10] = 3; // Same as decimal 3
-
-      console.log(bitstring);
-      const compressedBitstring = await this.compressBitstring(bitstring);
-      console.log('compressedBitstring', compressedBitstring);
-      const encodedBitstring = this.encodeBase64(compressedBitstring);
-      console.log('encodedBitstring', encodedBitstring);
-
-      const vc_body = {
-        '@context': ['https://www.w3.org/ns/credentials/v2'],
-        id: 'https://mydomain5000.loca.lt/api/registry/credentials/status/revocation/message',
-        type: ['VerifiableCredential', 'BitStringStatusListCredential'],
-        issuer: 'did:example:12345',
-        validFrom: '2024-10-25T15:52:58+07:00',
-        credentialSubject: {
-          id: 'f709cf3b-ad03-4291-8675-5b01c9fd0662',
-          type: 'BitstringStatusList',
-          statusPurpose: 'message',
-          encodedList: encodedBitstring,
-        },
-      };
-
-      const jwt = this.jwtEncode(vc_body);
       return jwt;
     } catch (error) {
       throw new Error(error);
@@ -159,9 +125,35 @@ export class RegistorService {
     }
   }
 
+  createBitArray(sizeInBits: number) {
+    try {
+      const arrayString = Array(sizeInBits / 8).fill('00000000');
+      const arraySet = this.toggleBit(arrayString, 0, 2);
+      console.log(arraySet);
+      const byteArray = arraySet.map((bin) => parseInt(bin, 2));
+      const hexArray = byteArray.map(
+        (byte) => `0x${byte.toString(16).padStart(2, '0')}`,
+      );
+      return hexArray;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  toggleBit(array: string[], index: number, position: number): string[] {
+    const bitString = array[index];
+    const toggledBitString = bitString
+      .split('')
+      .reverse()
+      .map((bit, pos) => (pos === position ? (bit === '0' ? '1' : '0') : bit))
+      .reverse()
+      .join('');
+    array[index] = toggledBitString;
+    return array;
+  }
+
   binaryToHexByte() {
     try {
-      const binaryArray = ['11001001', '01000100', '11111001'];
+      const binaryArray = ['00000100', '01000011', '11111111'];
       const byteArray = binaryArray.map((bin) => parseInt(bin, 2));
       const hexArray = byteArray.map(
         (byte) => `0x${byte.toString(16).padStart(2, '0')}`,

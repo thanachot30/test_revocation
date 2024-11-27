@@ -8,7 +8,6 @@ export class RegistorController {
   @Get('/credentials/status/revocation')
   async testRegistry() {
     try {
-      //https://mydomain5000.loca.lt/api/registry/credentials/status
       const revocationStatus = await this.registryService.testRevocation();
       return revocationStatus;
     } catch (error) {
@@ -17,18 +16,18 @@ export class RegistorController {
     }
   }
 
-  @Get('/credentials/status/revocation/message')
-  async messageRegistry() {
+  @Get('/credentials/status/suspension')
+  async testRegistry_suspension() {
     try {
-      const messageRegistry = await this.registryService.messageRegistry();
-
-      return messageRegistry;
+      const revocationStatus = await this.registryService.testRevocation();
+      return revocationStatus;
     } catch (error) {
+      console.log(error);
       throw new Error(error);
     }
   }
 
-  @Get('/credentials/status/revocation/message-new')
+  @Get('/credentials/status/message')
   message2() {
     try {
       const hexList = this.registryService.binaryToHexByte(); //mock
