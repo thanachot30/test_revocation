@@ -128,7 +128,19 @@ export class RegistorService {
   createBitArray(sizeInBits: number) {
     try {
       const arrayString = Array(sizeInBits / 8).fill('00000000');
-      const arraySet = this.toggleBit(arrayString, 0, 2);
+      let arraySet = this.toggleBit(arrayString, 0, 2);
+      arraySet = this.toggleBit(arraySet, 0, 3);
+      arraySet = this.toggleBit(arraySet, 0, 4);
+      arraySet = this.toggleBit(arraySet, 0, 5);
+      arraySet = this.toggleBit(arraySet, 0, 6);
+
+      arraySet = this.toggleBit(arraySet, 1, 1);
+      arraySet = this.toggleBit(arraySet, 1, 2);
+      arraySet = this.toggleBit(arraySet, 1, 4);
+
+      arraySet = this.toggleBit(arraySet, 2, 0);
+      arraySet = this.toggleBit(arraySet, 2, 1);
+      arraySet = this.toggleBit(arraySet, 2, 5);
       console.log(arraySet);
       const byteArray = arraySet.map((bin) => parseInt(bin, 2));
       const hexArray = byteArray.map(
@@ -139,6 +151,7 @@ export class RegistorService {
       throw new Error(error);
     }
   }
+
   toggleBit(array: string[], index: number, position: number): string[] {
     const bitString = array[index];
     const toggledBitString = bitString
