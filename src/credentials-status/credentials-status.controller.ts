@@ -23,6 +23,8 @@ export class CredentialsStatusController {
         encodedList: encodedList,
       },
     };
+    console.log('Status List Credential:', Status_List_Credential);
+
     console.log('Encoded List:', encodedList);
 
     const jwt = this.credentialsStatusService.jwtEncode(Status_List_Credential);
