@@ -17,13 +17,17 @@ export class CredentialsStatusService {
     const compressedData = gzipSync(bitstring.bits);
     console.log('compressedData:', compressedData);
 
-    const base64url = compressedData
-      .toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
+    const base64Encoded = compressedData.toString('base64');
+    console.log('Base64 Encoded:', base64Encoded);
 
-    const encodedList = `u${base64url}`;
+    const encodedList = base64Encoded;
+    // const base64url = compressedData
+    //   .toString('base64')
+    //   .replace(/\+/g, '-')
+    //   .replace(/\//g, '_')
+    //   .replace(/=+$/, '');
+
+    // const encodedList = `u${base64url}`;
     return encodedList;
   }
 
