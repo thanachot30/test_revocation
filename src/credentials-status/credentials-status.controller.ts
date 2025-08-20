@@ -13,12 +13,12 @@ export class CredentialsStatusController {
     const Status_List_Credential = {
       '@context': ['https://www.w3.org/ns/credentials/v2'],
       id: 'https://example.com/credentials/status/3',
-      type: ['VerifiableCredential', 'BitstringStatusListCredential'],
+      type: ['VerifiableCredential', 'BitstringStatusListEntry'],
       issuer: 'did:example:12345',
       validFrom: '2024-10-25T15:52:58+07:00',
       credentialSubject: {
         id: 'https://example.com/status/3#list',
-        type: 'BitstringStatusList',
+        type: 'StatusList2021',
         statusPurpose: 'revocation',
         encodedList: encodedList,
       },
