@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RegistorController } from './registor/registor/registor.controller';
 import { RegistorService } from './registor/registor/registor.service';
+import { CredentialsStatusModule } from './credentials-status/credentials-status.module';
 
 @Module({
-  imports: [],
+  imports: [CredentialsStatusModule],
   controllers: [AppController, RegistorController],
   providers: [AppService, RegistorService],
 })
