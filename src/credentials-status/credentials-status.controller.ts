@@ -30,7 +30,7 @@ export class CredentialsStatusController {
 
     const jwt = this.credentialsStatusService.jwtEncode(Status_List_Credential);
 
-    return jwt;
+    return Status_List_Credential;
   }
 
   @Post('/decrypt-encodedList')
