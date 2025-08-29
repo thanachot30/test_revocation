@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CredentialsStatusService } from './credentials-status.service';
-
+import { Bitstring } from '@digitalcredentials/bitstring';
+import { log } from 'console';
 @Controller('credentials-status')
 export class CredentialsStatusController {
   constructor(
@@ -14,8 +15,8 @@ export class CredentialsStatusController {
       '@context': ['https://www.w3.org/ns/credentials/v2'],
       id: 'https://example.com/credentials/status/3',
       type: ['VerifiableCredential', 'BitstringStatusListEntry'],
-      issuer: 'did:example:12345',
-      validFrom: '2024-10-25T15:52:58+07:00',
+      // issuer: 'did:example:12345',
+      // validFrom: '2024-10-25T15:52:58+07:00',
       credentialSubject: {
         id: 'https://example.com/status/3#list',
         type: 'StatusList2021',
@@ -30,5 +31,23 @@ export class CredentialsStatusController {
     const jwt = this.credentialsStatusService.jwtEncode(Status_List_Credential);
 
     return jwt;
+  }
+
+  @Post('/decrypt-encodedList')
+  async decryptEncodedList(@Body() body: { encodedList: string }) {
+    const { encodedList } = body;
+    const decodeBits = await Bitstring.decodeBits({ encoded: encodedList });
+    console.log('Decoded Bitstring:', decodeBits);
+
+    const bs = new Bitstring({
+      buffer: decodeBits,
+    });
+
+    console.log(bs);
+    console.log(bs.get(4));
+    console.log(bs.get(8));
+    // Decrypt the encoded list here
+    // For now, it just returns the encoded list
+    return encodedList;
   }
 }

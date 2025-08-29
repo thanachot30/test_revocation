@@ -6,13 +6,19 @@ import * as jwt from 'jsonwebtoken';
 @Injectable()
 export class CredentialsStatusService {
   createEncodedList(): string {
-    const bitstring = new Bitstring({ length: 131072 });
+    const bitstring = new Bitstring({
+      length: 131072,
+    });
 
-    bitstring.set(3, true);
+    bitstring.set(2, true);
+    bitstring.set(4, true);
+    bitstring.set(8, true);
 
-    console.log('get 3:', bitstring.get(3)); // true
+    console.log('get 8:', bitstring.get(8)); // true
+    console.log('get 4:', bitstring.get(4)); // false
 
-    console.log(bitstring, bitstring.bits);
+    console.log('bit', bitstring);
+    console.log(bitstring.bits);
 
     const compressedData = gzipSync(bitstring.bits);
     console.log('compressedData:', compressedData);
@@ -21,13 +27,6 @@ export class CredentialsStatusService {
     console.log('Base64 Encoded:', base64Encoded);
 
     const encodedList = base64Encoded;
-    // const base64url = compressedData
-    //   .toString('base64')
-    //   .replace(/\+/g, '-')
-    //   .replace(/\//g, '_')
-    //   .replace(/=+$/, '');
-
-    // const encodedList = `u${base64url}`;
     return encodedList;
   }
 
