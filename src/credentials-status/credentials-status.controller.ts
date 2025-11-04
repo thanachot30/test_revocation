@@ -14,7 +14,7 @@ export class CredentialsStatusController {
     const Status_List_Credential = {
       '@context': ['https://www.w3.org/ns/credentials/v2'],
       id: 'https://example.com/credentials/status/3',
-      type: ['VerifiableCredential', 'StatusList2021Credential'],
+      type: ['VerifiableCredential', 'BitstringStatusListCredential'],
       issuer: 'did:example:12345',
       validFrom: '2021-04-05T14:27:40Z',
       credentialSubject: {
