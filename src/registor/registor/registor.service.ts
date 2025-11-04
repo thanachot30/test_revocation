@@ -70,7 +70,8 @@ export class RegistorService {
       //........ORG...........
       const compressedData = gzipSync(buffer);
       console.log('compressedBitstring', compressedData);
-      const encodedBitstring = compressedData.toString('base64');
+      let encodedBitstring = compressedData.toString('base64url');
+      // encodedBitstring = this.base64ToBase64Url(encodedBitstring);
       console.log('encodedBitstring', encodedBitstring);
 
       const vc_body = {
