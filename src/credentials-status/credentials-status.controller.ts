@@ -14,12 +14,12 @@ export class CredentialsStatusController {
     const Status_List_Credential = {
       '@context': ['https://www.w3.org/ns/credentials/v2'],
       id: 'https://example.com/credentials/status/3',
-      type: ['VerifiableCredential', 'BitstringStatusListEntry'],
-      // issuer: 'did:example:12345',
-      // validFrom: '2024-10-25T15:52:58+07:00',
+      type: ['VerifiableCredential', 'BitstringStatusListCredential'],
+      issuer: 'did:example:12345',
+      validFrom: '2021-04-05T14:27:40Z',
       credentialSubject: {
         id: 'https://example.com/status/3#list',
-        type: 'StatusList2021',
+        type: 'BitstringStatusList',
         statusPurpose: 'revocation',
         encodedList: encodedList,
       },
@@ -44,7 +44,7 @@ export class CredentialsStatusController {
     });
 
     console.log(bs);
-    console.log(bs.get(4));
+    console.log(bs.get(1));
     console.log(bs.get(8));
     // Decrypt the encoded list here
     // For now, it just returns the encoded list
