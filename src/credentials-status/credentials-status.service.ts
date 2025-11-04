@@ -23,7 +23,7 @@ export class CredentialsStatusService {
     const compressedData = gzipSync(bitstring.bits);
     console.log('compressedData:', compressedData);
 
-    const base64Encoded = compressedData.toString('base64');
+    const base64Encoded = compressedData.toString('base64url');
     console.log('Base64 Encoded:', base64Encoded);
 
     const encodedList = base64Encoded;
