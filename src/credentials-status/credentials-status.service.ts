@@ -25,6 +25,9 @@ export class CredentialsStatusService {
 
     const base64Encoded = compressedData.toString('base64url');
     const multibaseEncodedList = 'u' + base64Encoded;
+
+    // const base64Encoded = compressedData.toString('base64');
+
     console.log('Base64 Encoded:', base64Encoded);
 
     const encodedList = multibaseEncodedList;
