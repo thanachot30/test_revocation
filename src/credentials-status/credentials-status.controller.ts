@@ -19,7 +19,7 @@ export class CredentialsStatusController {
       validFrom: '2021-04-05T14:27:40Z',
       credentialSubject: {
         id: 'https://example.com/status/3#list',
-        type: 'BitstringStatusList',
+        type: 'StatusList2021',
         statusPurpose: 'revocation',
         encodedList: encodedList,
       },
